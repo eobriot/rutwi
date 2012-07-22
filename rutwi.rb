@@ -48,6 +48,7 @@ class Worker
          log["action"] = "discarding (already fetched)"
          worklog.insert(log)
          @log.info("discarding user #{next_user["id"]}")
+         userTBD.remove("id" => next_user["id"])
       else
          log = self.make_log(next_user["id"])
          log["action"] = "fetching"
@@ -69,11 +70,12 @@ class Worker
                                                                         #Time to sleep depends of the error raised 
                                                          
             delay = 10                                                  # By default, wait for 10 seconds
-            if Twitter.remaining_hits == 0                              # Did we hit the hourly limit?
-               delay = Twitter.reset_time_in_seconds
-               logger.error("We did hit the twitter API limit")
+            if Twitter.rate_limit_status.remaining_hits == 0                              # Did we hit the hourly limit?
+               #delay = Twitter.rate_limit_status.reset_time_in_seconds
+               delay = Twitter.rate_limit_status.reset_time - Time.now
+               @log.error("We did hit the twitter API limit")
             end
-            logger.error("Going to sleep for #{delay} seconds, because of #{error.message}")
+            @log.error("Going to sleep for #{delay} seconds, because of #{error.message}")
             log = self.make_log(next_user["id"])
             log["action"] = "Going to sleep for #{delay}"
             worklog.insert(log)
