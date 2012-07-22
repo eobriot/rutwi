@@ -1,5 +1,6 @@
 require "twitter"
-require "sequel"
+#require "sequel"
+require "mongo"
 
 class User
    attr_accessor :id, :screen_name, :followers, :following
