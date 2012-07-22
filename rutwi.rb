@@ -58,17 +58,13 @@ class Worker
             user = self.fetch_user(next_user["id"])
             userinfo.insert(user)                                       # fetching user and storing result 
             @log.info("Inserting followers in the TBD queue...") 
-            user["followers"].each { |id|
-               if userTBD.find("id" => id).count == 0
-                  userTBD.insert({ "id" => id})
-               end
-            }
+            userTBD.insert(user["followers"].collect { |id|
+               { "id" => id}
+            })
             @log.info("Inserting friends in the TBD queue...")
-            user["friends"].each { |id|
-               if userTBD.find("id" => id).count == 0
-                  userTBD.insert({"id" => id})
-               end
-            }
+            userTBD.insert(user["friends"].collect { |id|
+               { "id" => id}
+            })
          rescue Twitter::Error => error                                 #Something went wrong, we put back user in queue and go to sleep until we can act again
                                                                         #Time to sleep depends of the error raised 
                                                          
