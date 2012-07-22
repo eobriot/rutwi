@@ -1,0 +1,12 @@
+database:
+   host:  mongodb1.alwaysdata.com
+   user: gnoufou_etienne
+   password: edelweiss1
+   db: gnoufou_rutwi_test
+
+application:
+   max: 2
+   consumer_key: Qt1ElUmEynk8XwVWLHyyA
+   consumer_secret: kRkFIlnJkFQdoxYGPy5zQQOelktnqypUtJejOFukk
+   oauth_token: 	24932485-ggeLxrQK2zJh5FvWCbrgiw85tsEtjDzzHz3HZKvpa
+   oauth_token_secret: FAu9fOQnFoLObSICLicLAuFRmYKya4uN4FqHYYh5GE
