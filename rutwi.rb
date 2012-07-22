@@ -79,6 +79,7 @@ class Worker
             log = self.make_log(next_user["id"])
             log["action"] = "Going to sleep for #{delay}"
             worklog.insert(log)
+            @log.info("Putting back user #{next_user["id"]} in the TBD queue")
             userTBD.insert({"id" => next_user["id"]})           #Putting back the user in queue...
 
             return {"status" => :error, "delay" => delay}
