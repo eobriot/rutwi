@@ -45,7 +45,8 @@ class Worker
       userTBD = db.collection("userTBD")
       worklog = db.collection("worklog")
       userinfo = db.collection("user")
-      next_user = userTBD.find_one                                   #finding next user to fetch 
+      next_user = userTBD.find().sort([:timestamp,:desc]).limit(1)   #finding next user to fetch, using the timestamp to retrieve the oldest inserted (this give the tbd from the oldest user
+                                                                     #looked-ud, amongst the tbd, no particular order is needed.)
       if userinfo.find("id" => next_user["id"]).count > 0    # User has already been looked up in twitter
          log = self.make_log(next_user["id"])
          log["action"] = "discarding (already fetched)"
@@ -62,12 +63,16 @@ class Worker
             user = self.fetch_user(next_user["id"])
             userinfo.insert(user)                                       # fetching user and storing result 
             @log.info("Inserting followers in the TBD queue...") 
+            timestamp = Time.now                                        #Timestamping the insertion to be able to identify all the tbd issued from the same user (we can have collision though
+                                                                        # if we have multiple workers. Need to watch that). Used to do a breadth-first lookup (trying)
             userTBD.insert(user["followers"].collect { |id|
-               { "id" => id}
+               {  "id" => id,
+                  "timestamp" => timestamp}
             })
             @log.info("Inserting friends in the TBD queue...")
             userTBD.insert(user["friends"].collect { |id|
-               { "id" => id}
+               {  "id" => id,
+                  "timestamp" => timestamp}
             })
          rescue Twitter::Error => error                                 #Something went wrong, we put back user in queue and go to sleep until we can act again
                                                                         #Time to sleep depends of the error raised 
@@ -104,7 +109,7 @@ class Worker
       @log.info("Fetching #{userTwitter.friends_count} friends of user #{userTwitter.screen_name} - id #{userid}")
       friendsTwitter = Twitter.friend_ids(userid)
       user["id"] = userTwitter.id
-      user["name"] = userTwitter.screen_name
+      user["screen_name"] = userTwitter.screen_name
       user["followers_count"] = userTwitter.followers_count
       user["friends_count"] = userTwitter.friends_count
       user["followers"] = followersTwitter.ids
