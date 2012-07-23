@@ -6,6 +6,7 @@ database:
 
 application:
    max: 20
+   authenticated: false
    consumer_key: Qt1ElUmEynk8XwVWLHyyA
    consumer_secret: kRkFIlnJkFQdoxYGPy5zQQOelktnqypUtJejOFukk
    oauth_token: 	24932485-ggeLxrQK2zJh5FvWCbrgiw85tsEtjDzzHz3HZKvpa

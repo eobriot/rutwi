@@ -31,13 +31,16 @@ class Worker
          @log.fatal "Error while authenticating : #{authError.message}"
          abort
       end   
-      Twitter.configure do |config|
-         config.consumer_key = settings["consumer_key"]
-         config.consumer_secret = settings["consumer_secret"]
-         config.oauth_token = settings["oauth_token"]
-         config.oauth_token_secret = settings["oauth_token_secret"]
+      if settings["authenticated"] == true
+         Twitter.configure do |config| 
+            config.consumer_key = settings["consumer_key"]
+            config.consumer_secret = settings["consumer_secret"]
+            config.oauth_token = settings["oauth_token"]
+            config.oauth_token_secret = settings["oauth_token_secret"]
+         end
       end
    end
+
    def work() 
       userTBD = db.collection("userTBD")
       worklog = db.collection("worklog")
@@ -69,7 +72,7 @@ class Worker
          rescue Twitter::Error => error                                 #Something went wrong, we put back user in queue and go to sleep until we can act again
                                                                         #Time to sleep depends of the error raised 
                                                          
-            delay = 10                                                  # By default, wait for 10 seconds
+            delay = 2                                                   # By default, wait for 2 seconds
             if Twitter.rate_limit_status.remaining_hits == 0                              # Did we hit the hourly limit?
                #delay = Twitter.rate_limit_status.reset_time_in_seconds
                delay = Twitter.rate_limit_status.reset_time - Time.now
@@ -80,8 +83,7 @@ class Worker
             log["action"] = "Going to sleep for #{delay}"
             worklog.insert(log)
             @log.info("Putting back user #{next_user["id"]} in the TBD queue")
-            userTBD.insert({"id" => next_user["id"]})           #Putting back the user in queue...
-
+            userTBD.insert({"id" => next_user["id"]})             #Putting back the user in queue...
             return {"status" => :error, "delay" => delay}
          end
       end
