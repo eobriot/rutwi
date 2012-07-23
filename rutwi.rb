@@ -84,6 +84,7 @@ class Worker
                @log.error("We did hit the twitter API limit")
             end
             @log.error("Going to sleep for #{delay} seconds, because of #{error.message}")
+            @log.error("We'll be back at #{Time.now + delay}")
             log = self.make_log(next_user["id"])
             log["action"] = "Going to sleep for #{delay}"
             worklog.insert(log)
