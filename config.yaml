@@ -5,7 +5,7 @@ database:
    db: gnoufou_rutwi_test
 
 application:
-   max: 20
+   max: 200
    authenticated: false
    consumer_key: Qt1ElUmEynk8XwVWLHyyA
    consumer_secret: kRkFIlnJkFQdoxYGPy5zQQOelktnqypUtJejOFukk

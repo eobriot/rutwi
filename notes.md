@@ -23,3 +23,6 @@ As performances is (yet) no longer an issue, I won't investigate the use of nati
 * How to be certain that we do a breadth-first and not a depth first? Should I add a timestamp to the TBD collection and sort on it for getting the next user? or maybe add a user field, and exhaust all relating to the user? In this case I should need to indicate which user I'm working on so that other workers can help to to exhaust my queue.
 
 * As the twitter limit is IP based for anonymous and Oauth-token based for authenticated access, I will do all my request as unautenticated, so I can use multiple workers on different servers in parallel. The 350 vs 150 request per hour in authenticated mode is not a factor as with 3 workers I can do 3*150 requests (450)
+
+* We put back the user in the TBD queue if we have a problem during the request. What if the user was fetched, but her friends/followers didn't? Do we ensure that the user is not put in the user collection (which implies that the tbd user would be skipped next time,thus maybe leading to inconsistency regarding the friends / followers not retrieved in the user collection for this particular user)
+In fact, as we insert the user as a whole (with the friends and followers), the atomicity of the operation garaantees that we won't have an half populated user in the user collection.
