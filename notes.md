@@ -26,3 +26,6 @@ As performances is (yet) no longer an issue, I won't investigate the use of nati
 
 * We put back the user in the TBD queue if we have a problem during the request. What if the user was fetched, but her friends/followers didn't? Do we ensure that the user is not put in the user collection (which implies that the tbd user would be skipped next time,thus maybe leading to inconsistency regarding the friends / followers not retrieved in the user collection for this particular user)
 In fact, as we insert the user as a whole (with the friends and followers), the atomicity of the operation garaantees that we won't have an half populated user in the user collection.
+
+* Well, it seems the timestamping method doesnt work (I'm fetching korean users but should be only working with my own account...)
+In fact it would work if I was'nt such an ass. I was using a descendign sort to get the oldest timestamp - it was giving me the most recent... Idiot.

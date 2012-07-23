@@ -45,7 +45,7 @@ class Worker
       userTBD = db.collection("userTBD")
       worklog = db.collection("worklog")
       userinfo = db.collection("user")
-      next_user = userTBD.find.sort([:timestamp,:desc]).limit(1).next   #finding next user to fetch, using the timestamp to retrieve the oldest inserted (this give the tbd from the oldest user
+      next_user = userTBD.find.sort([:timestamp,:asc]).limit(1).next   #finding next user to fetch, using the timestamp to retrieve the oldest inserted (this give the tbd from the oldest user
                                                                      #looked-ud, amongst the tbd, no particular order is needed.)
       if userinfo.find("id" => next_user["id"]).count > 0    # User has already been looked up in twitter
          log = self.make_log(next_user["id"])
