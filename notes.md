@@ -41,7 +41,7 @@ In fact it would work if I was'nt such an ass. I was using a descendign sort to 
 
 Regarding the use of AWS
 ------------------------
-The linux Amazon AMi comes with ruby 1.8.7 and needs a bit of install, got 1.9.3 running by following [this | http://www.johnvarghese.com/installing-ruby-1-9-3-on-a-linux-ami-on-amazon-aws/].
+The linux Amazon AMi comes with ruby 1.8.7 and needs a bit of install, got 1.9.3 running by following [this] (http://www.johnvarghese.com/installing-ruby-1-9-3-on-a-linux-ami-on-amazon-aws/).
 Maybe should I try a standard ubuntu , and install 1.9.3 with synaptic. WOuld it be faster (the install on amazon AMI takes about 30 minutes) ?
 In fact, I created a new instance based on the one I customized. All is OK.
 
