@@ -98,7 +98,7 @@ class Worker
 			log["Data"] = "Got an error #{error.message}"
 			worklog.insert(log)
 			@log.error("Got an exception #{error.message}, putting user aside")
-			errored.insert({"id" => next_user["id"], "timestamp" => Time.now, "error" => error.message})
+			errored.insert({"id" => next_user["id"], "timestamp" => Time.now, "error" => error.message, "worker" => @worker_id})
 
          end
       end
