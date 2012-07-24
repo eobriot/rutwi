@@ -36,6 +36,8 @@ In fact it would work if I was'nt such an ass. I was using a descendign sort to 
 
 * users which generates error during the retrieval of information should not be put bac in the queue (they will again raise an error, and we'll could eventually get stuc on them if they became the oldest entry in the TBD)
 
+* Should I capp the numbre of user looked up, by specifying a maximal graph diameter from the starting user? Is it feasible?
+
 Regarding the use of AWS
 ------------------------
 The linux Amazon AMi comes with ruby 1.8.7 and needs a bit of install, got 1.9.3 running by following [this | http://www.johnvarghese.com/installing-ruby-1-9-3-on-a-linux-ami-on-amazon-aws/].

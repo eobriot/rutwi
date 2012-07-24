@@ -45,6 +45,7 @@ class Worker
       userTBD = db.collection("userTBD")
       worklog = db.collection("worklog")
       userinfo = db.collection("user")
+	  errored = db.collection("errored")
       next_user = userTBD.find.sort([:timestamp,:asc]).limit(1).next   #finding next user to fetch, using the timestamp to retrieve the oldest inserted (this give the tbd from the oldest user
                                                                      #looked-ud, amongst the tbd, no particular order is needed.)
       if userinfo.find("id" => next_user["id"]).count > 0    # User has already been looked up in twitter
@@ -74,7 +75,7 @@ class Worker
                {  "id" => id,
                   "timestamp" => timestamp}
             })
-         rescue Twitter::Error => error                                 #Something went wrong, we put back user in queue and go to sleep until we can act again
+         rescue Twitter::Error::EnhanceYourCalm, Twitter::Error::BadRequest => error                                 #Something went wrong, we put back user in queue and go to sleep until we can act again
                                                                         #Time to sleep depends of the error raised 
                                                          
             delay = 2                                                   # By default, wait for 2 seconds
@@ -90,7 +91,15 @@ class Worker
             worklog.insert(log)
             @log.info("Putting back user #{next_user["id"]} in the TBD queue")
             userTBD.insert({"id" => next_user["id"], "timestamp" => next_user["timestamp"]})             #Putting back the user in queue...
-            return {"status" => :error, "delay" => delay}
+		 	return {"status" => :error, "delay" => delay}
+		 rescue Twitter::Error => error															# Something went really wrong during the search . Put the user aside in sa special collection, we'll look on it later
+		 	log = self.make_log(next_user["id"])
+			log["Action"] = "Discarding"
+			log["Data"] = "Got an error #{error.message}"
+			worklog.insert(log)
+			@log.error("Got an exception #{error.message}, putting user aside")
+			errored.insert({"id" => next_user["id"], "timestamp" => Time.now, "error" => error.message})
+
          end
       end
       return {"status" => :ok}
